@@ -1,0 +1,57 @@
+Container & Card Styling
+.sector-form-wrapper {
+  /* padding: 20px; */
+  max-width: 950px;
+  /* margin: 0 auto; */
+}
+
+.sector-form-card {
+  /* padding: 24px; */
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom:20px;
+}
+
+/* Form Group Spacing */
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* Labels */
+.form-group label {
+  display: block;
+  font-weight: 500;
+  /* margin-bottom: 8px; */
+}
+
+/* Required Star */
+.required-star {
+  color: red;
+}
+
+/* Button Group */
+.form-buttons {
+  margin-top: 20px;
+}
+
+/* Ant Design Select Dropdown Customization */
+.custom-select-dropdown .ant-select-item-option-selected {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+.custom-select-dropdown .ant-select-item-option-active {
+  background-color: #e6f0ff !important;
+}
+
+/* Optional: Blue border on focus */
+.ant-select-focused .ant-select-selector {
+  border-color: #007bff !important;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2) !important;
+}
+
+/* Optional: Override default cursor inside dropdown */
+.ant-select-dropdown {
+  cursor: pointer;
+}

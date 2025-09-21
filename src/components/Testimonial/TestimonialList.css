@@ -1,0 +1,53 @@
+/* TestimonialList.css */
+
+/* Force table layout to keep all columns same width */
+.testimonial-table {
+  table-layout: fixed; /* Equal column width */
+  width: 100%;
+}
+/* Increase width of message column only */
+.message-cell {
+  min-width: 300px;
+  max-width: 500px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+
+
+.testimonial-table th,
+.testimonial-table td {
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  vertical-align: middle;
+  text-align: center;
+  padding: 12px;
+}
+
+/* Responsive tweaks for smaller devices */
+@media (max-width: 576px) {
+  .testimonial-table td {
+    font-size: 13px;
+    padding: 6px;
+  }
+
+  .testimonial-table td .btn {
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .testimonial-table td img {
+    max-width: 50px;
+    height: auto;
+  }
+
+  .d-sm-flex {
+    flex-direction: column !important;
+  }
+}
+
+/* Prevent unnecessary horizontal scroll */
+.table-responsive {
+  overflow-x: auto;
+}

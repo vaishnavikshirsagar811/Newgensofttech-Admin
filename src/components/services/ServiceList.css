@@ -1,0 +1,98 @@
+.service-container {
+  padding: 20px;
+}
+
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.service-header h2 {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.add-btn {
+  background-color: #16a34a;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background-color: #15803d;
+}
+
+/* Table */
+.service-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.service-table th,
+.service-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.service-table th {
+  background-color: #f3f4f6;
+  font-weight: bold;
+}
+
+.service-table tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Image */
+.service-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.no-img {
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* Buttons */
+.edit-btn {
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin-right: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background-color: #d97706;
+}
+
+.delete-btn {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #b91c1c;
+}
+
+.no-data {
+  text-align: center;
+  padding: 15px;
+  color: #888;
+}
