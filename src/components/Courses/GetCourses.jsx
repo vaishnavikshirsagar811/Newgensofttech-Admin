@@ -4,11 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const categories = [
-  "Web Development",
-  "Data Science",
-  "Mobile Apps",
-  "AI/ML",
-  "Other",
+'Development', 'Database', 'Cloud', 'SAP'
 ];
 
 // Gradient colors from your image
@@ -48,7 +44,7 @@ const GetCourses = () => {
   };
 
   const getColumns = () => [
-    { title: "Title", dataIndex: "title", key: "title" },
+    { title: "Title", dataIndex: "courseName", key: "title" },
     { title: "Fee", dataIndex: "fee", key: "fee", render: (val) => `₹${val}` },
     { title: "Duration", dataIndex: "duration", key: "duration" },
     { title: "Contact", dataIndex: "contactNumber", key: "contactNumber" },

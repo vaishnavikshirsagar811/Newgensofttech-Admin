@@ -1,7 +1,10 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+// Toastify
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./auth/Login";
 import Signup from "./auth/Signup";
@@ -31,6 +34,7 @@ import GetCourses from "./components/Courses/GetCourses";
 import EditCourseForm from "./components/Courses/EditCourseForm";
 import AddBatchForm from "./components/Batchess/AddBatchForm";
 import BatchManagement from "./components/Batchess/BatchManagementlist";
+
 function App() {
   return (
     <AuthProvider>
@@ -41,7 +45,6 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} /> 
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-        
           <Route
             path="/admin"
             element={
@@ -64,10 +67,8 @@ function App() {
             <Route path="/admin/services" element={<ServiceList />} />
             <Route path="/admin/services/create" element={<ServiceForm />} />
             <Route path="/admin/services/edit/:id" element={<ServiceForm />} />
-      
             <Route path="/admin/employees/leaves" element={<LeavesList />} />
             <Route path="/admin/employees/list" element={<EmployeesList />} />
-           
             <Route path="/admin/courses/create" element={<CreateCourseForm />} />
             <Route path="/admin/courses/list" element={<GetCourses />} />
             <Route path="/admin/courses/edit/:courseId" element={<EditCourseForm />} />
@@ -78,8 +79,12 @@ function App() {
           {/* Catch-all */}
           <Route path="*" element={<Login />} />
         </Routes>
+
+        {/* 🔔 Toastify Global Container */}
+        <ToastContainer position="top-right" autoClose={3000} />
       </Router>
     </AuthProvider>
   );
 }
+
 export default App;

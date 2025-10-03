@@ -1,5 +1,408 @@
+// import React, { useState, useEffect } from "react";
+// import { useParams } from "react-router-dom";
+// import {
+//   Form,
+//   Input,
+//   Button,
+//   Upload,
+//   Select,
+//   InputNumber,
+//   Switch,
+//   Row,
+//   Col,
+//   Card,
+//   Typography,
+//   Divider,
+//   Spin,
+//   DatePicker,
+// } from "antd";
+// import { UploadOutlined } from "@ant-design/icons";
+// import axios from "axios";
+// import dayjs from "dayjs";
+// import { toast } from "react-toastify";
+
+// const { TextArea } = Input;
+// const { Title } = Typography;
+// const { Option } = Select;
+
+
+// const categoryOptions = ["Development", "Database", "Cloud", "SAP"];
+// const modeOptions = ["Online", "Offline", "Hybrid"];
+
+// const EditCourseForm = () => {
+//   const { courseId } = useParams();
+//   const [loading, setLoading] = useState(false);
+//   const [fetching, setFetching] = useState(true);
+//   const [form] = Form.useForm();
+
+//   // Fetch course by ID
+//   const fetchCourse = async () => {
+//     try {
+//       setFetching(true);
+//       const res = await axios.get(
+//         `http://localhost:5016/api/v1/courses/${courseId}`
+//       );
+//       if (res.data.success) {
+//         const course = res.data.data;
+
+//         // Transform images
+//         const imagesList =
+//           course.images?.map((img, index) => ({
+//             uid: index,
+//             name: `Image-${index}`,
+//             status: "done",
+//             url: img.url,
+//           })) || [];
+
+//         // Transform syllabus
+//         const syllabusList = course.syllabus
+//           ? [
+//               {
+//                 uid: 0,
+//                 name: "syllabus.pdf",
+//                 status: "done",
+//                 url: course.syllabus.url,
+//               },
+//             ]
+//           : [];
+
+//         form.setFieldsValue({
+//           courseName: course.courseName,
+//           description: course.description,
+//           category: course.category,
+//           fee: course.fee,
+//           duration: course.duration,
+//           contactNumber: course.contactNumber,
+//           location: course.location,
+//           timeSlot: course.timeSlot,
+//           mode: course.mode,
+//           instructorName: course.instructorName,
+//           startDate: course.startDate ? dayjs(course.startDate) : null,
+//           endDate: course.endDate ? dayjs(course.endDate) : null,
+//           seatsAvailable: course.seatsAvailable,
+//           isTrending: course.isTrending,
+//           isUpcomingBatch: course.isUpcomingBatch,
+//           images: imagesList,
+//           syllabus: syllabusList,
+//         });
+//       }
+//     } catch (err) {
+//       console.error(err);
+//     } finally {
+//       setFetching(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchCourse();
+//   }, [courseId]);
+
+//   const handleSubmit = async (values) => {
+//     try {
+//       setLoading(true);
+//       const formData = new FormData();
+
+//       formData.append("courseName", values.courseName);
+//       formData.append("timeSlot", values.timeSlot);
+//       formData.append("mode", values.mode);
+//       formData.append("instructorName", values.instructorName);
+//       formData.append("startDate", values.startDate?.toISOString());
+//       formData.append("endDate", values.endDate?.toISOString());
+//       formData.append("seatsAvailable", values.seatsAvailable);
+//       formData.append("isTrending", values.isTrending);
+//       formData.append("isUpcomingBatch", values.isUpcomingBatch);
+//       formData.append("fee", values.fee);
+//       formData.append("contactNumber", values.contactNumber);
+//       formData.append("location", values.location);
+//       formData.append("category", values.category);
+//       formData.append("duration", values.duration);
+//       formData.append("description", values.description);
+
+//       // images
+//       if (values.images?.length > 0) {
+//         values.images.forEach((file) => {
+//           if (file.originFileObj)
+//             formData.append("images", file.originFileObj);
+//           else if (file.url) formData.append("existingImages", file.url);
+//         });
+//       }
+
+//       // syllabus
+//       if (values.syllabus?.length > 0) {
+//         const syllabusFile = values.syllabus[0];
+//         if (syllabusFile.originFileObj)
+//           formData.append("syllabus", syllabusFile.originFileObj);
+//         else if (syllabusFile.url)
+//           formData.append("existingSyllabus", syllabusFile.url);
+//       }
+
+//       const res = await axios.put(
+//         `http://localhost:5016/api/v1/courses/${courseId}`,
+//         formData,
+//         { headers: { "Content-Type": "multipart/form-data" } }
+//       );
+
+//        if (res.data.success) {
+//       toast.success("✅ Course Updated successfully!");
+//     } else {
+//       toast.error("⚠️ Failed to update course!");
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     toast.error("❌ Something went wrong, please try again.");
+//   }
+//   };
+
+//   if (fetching)
+//     return <Spin style={{ display: "block", margin: "50px auto" }} />;
+
+//   return (
+//     <Card
+//       style={{
+//         maxWidth: 1000,
+//         margin: "40px auto",
+//         padding: "20px 30px",
+//         borderRadius: 12,
+//         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+//       }}
+//     >
+//       <Title level={3} style={{ textAlign: "center", marginBottom: 20 }}>
+//         Edit Course
+//       </Title>
+//       <Divider>Course Information</Divider>
+//       <Form layout="vertical" form={form} onFinish={handleSubmit}>
+//         <Row gutter={16}>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Course Name"
+//               name="courseName"
+//               rules={[{ required: true, message: "Please enter course name" }]}
+//             >
+//               <Input placeholder="Enter course name" />
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Instructor Name"
+//               name="instructorName"
+//               rules={[{ required: true, message: "Please enter instructor name" }]}
+//             >
+//               <Input placeholder="Enter instructor name" />
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Row gutter={16}>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Category"
+//               name="category"
+//               rules={[{ required: true, message: "Please select a category" }]}
+//             >
+//               <Select placeholder="Select category">
+//                 {categoryOptions.map((cat) => (
+//                   <Option key={cat} value={cat}>
+//                     {cat}
+//                   </Option>
+//                 ))}
+//               </Select>
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Mode"
+//               name="mode"
+//               rules={[{ required: true, message: "Please select mode" }]}
+//             >
+//               <Select placeholder="Select mode">
+//                 {modeOptions.map((m) => (
+//                   <Option key={m} value={m}>
+//                     {m}
+//                   </Option>
+//                 ))}
+//               </Select>
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Form.Item
+//           label="Description"
+//           name="description"
+//           rules={[
+//             { required: true, message: "Please enter course description" },
+//           ]}
+//         >
+//           <TextArea rows={4} placeholder="Enter course description" />
+//         </Form.Item>
+
+//         <Row gutter={16}>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Fee (₹)"
+//               name="fee"
+//               rules={[{ required: true, message: "Please enter fee" }]}
+//             >
+//               <InputNumber
+//                 style={{ width: "100%" }}
+//                 placeholder="Enter course fee"
+//               />
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Duration (in months)"
+//               name="duration"
+//               rules={[{ required: true, message: "Please enter duration" }]}
+//             >
+//               <Input placeholder="e.g. 3" />
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Row gutter={16}>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Time Slot"
+//               name="timeSlot"
+//               rules={[{ required: true, message: "Please enter time slot" }]}
+//             >
+//               <Input placeholder="Mon-Wed-Fri 6:00 PM - 9:00 PM" />
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Seats Available"
+//               name="seatsAvailable"
+//               rules={[{ required: true, message: "Please enter seat count" }]}
+//             >
+//               <InputNumber style={{ width: "100%" }} min={1} />
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Row gutter={16}>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Start Date"
+//               name="startDate"
+//               rules={[{ required: true, message: "Please select start date" }]}
+//             >
+//               <DatePicker style={{ width: "100%" }} />
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="End Date"
+//               name="endDate"
+//               rules={[{ required: true, message: "Please select end date" }]}
+//             >
+//               <DatePicker style={{ width: "100%" }} />
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Row gutter={16}>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Contact Number"
+//               name="contactNumber"
+//               rules={[
+//                 { required: true, message: "Please enter contact number" },
+//                 {
+//                   pattern: /^[6-9]\d{9}$/,
+//                   message: "Enter valid 10-digit mobile number",
+//                 },
+//               ]}
+//             >
+//               <Input placeholder="Enter contact number" />
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Location"
+//               name="location"
+//               rules={[{ required: true, message: "Please enter location" }]}
+//             >
+//               <Input placeholder="Enter location" />
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Row gutter={16}>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Trending"
+//               name="isTrending"
+//               valuePropName="checked"
+//             >
+//               <Switch />
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Upcoming Batch"
+//               name="isUpcomingBatch"
+//               valuePropName="checked"
+//             >
+//               <Switch />
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Divider>Uploads</Divider>
+//         <Row gutter={16}>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Course Images"
+//               name="images"
+//               valuePropName="fileList"
+//               getValueFromEvent={(e) =>
+//                 Array.isArray(e) ? e : e && e.fileList
+//               }
+//             >
+//               <Upload multiple beforeUpload={() => false} listType="picture">
+//                 <Button icon={<UploadOutlined />}>Upload Images</Button>
+//               </Upload>
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} md={12}>
+//             <Form.Item
+//               label="Syllabus (PDF)"
+//               name="syllabus"
+//               valuePropName="fileList"
+//               getValueFromEvent={(e) =>
+//                 Array.isArray(e) ? e : e && e.fileList
+//               }
+//             >
+//               <Upload beforeUpload={() => false} maxCount={1} accept=".pdf">
+//                 <Button icon={<UploadOutlined />}>Upload PDF</Button>
+//               </Upload>
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Form.Item style={{ textAlign: "center", marginTop: 20 }}>
+//           <Button
+//             type="primary"
+//             htmlType="submit"
+//             loading={loading}
+//             size="large"
+//             style={{ borderRadius: 8, padding: "0 40px" }}
+//           >
+//             Update Course
+//           </Button>
+//         </Form.Item>
+//       </Form>
+//     </Card>
+//   );
+// };
+
+// export default EditCourseForm;
+
+
+
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // <-- import useParams
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Form,
   Input,
@@ -7,7 +410,6 @@ import {
   Upload,
   Select,
   InputNumber,
-  message,
   Switch,
   Row,
   Col,
@@ -15,75 +417,85 @@ import {
   Typography,
   Divider,
   Spin,
+  DatePicker,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
 const { TextArea } = Input;
 const { Title } = Typography;
+const { Option } = Select;
 
-const categoryOptions = [
-  "Web Development",
-  "Data Science",
-  "Mobile Apps",
-  "AI/ML",
-  "Other",
-];
+const categoryOptions = ["Development", "Database", "Cloud", "SAP"];
+const modeOptions = ["Online", "Offline", "Hybrid"];
 
 const EditCourseForm = () => {
-  const { courseId } = useParams(); // <-- get courseId from URL
+  const { courseId } = useParams();
+  const navigate = useNavigate(); // For redirect
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [form] = Form.useForm();
 
   // Fetch course by ID
-const fetchCourse = async () => {
-  try {
-    setFetching(true);
-    const res = await axios.get(`http://localhost:5016/api/v1/courses/${courseId}`);
-    if (res.data.success) {
-      const course = res.data.data; // <- use data from your API
+  const fetchCourse = async () => {
+    try {
+      setFetching(true);
+      const res = await axios.get(
+        `http://localhost:5016/api/v1/courses/${courseId}`
+      );
+      if (res.data.success) {
+        const course = res.data.data;
 
-      // Transform images for Upload component
-      const imagesList = course.images?.map((img, index) => ({
-        uid: index,
-        name: `Image-${index}`,
-        status: "done",
-        url: img.url, // use img.url from your API
-      })) || [];
-
-      // Transform syllabus for Upload component
-      const syllabusList = course.syllabus
-        ? [{
-            uid: 0,
-            name: "syllabus.pdf",
+        // Transform images for Upload component
+        const imagesList =
+          course.images?.map((img, index) => ({
+            uid: index,
+            name: `Image-${index}`,
             status: "done",
-            url: course.syllabus.url, // syllabus is an object with url
-          }]
-        : [];
+            url: img.url,
+          })) || [];
 
-      form.setFieldsValue({
-        title: course.title,
-        description: course.description,
-        category: course.category,
-        fee: course.fee,
-        duration: course.duration,
-        contactNumber: course.contactNumber,
-        isTrending: course.isTrending,
-        images: imagesList,
-        syllabus: syllabusList,
-      });
-    } else {
-      message.error("Failed to fetch course data.");
+        // Transform syllabus
+        const syllabusList = course.syllabus
+          ? [
+              {
+                uid: 0,
+                name: "syllabus.pdf",
+                status: "done",
+                url: course.syllabus.url,
+              },
+            ]
+          : [];
+
+        form.setFieldsValue({
+          courseName: course.courseName,
+          description: course.description,
+          category: course.category,
+          fee: course.fee,
+          duration: course.duration,
+          contactNumber: course.contactNumber,
+          location: course.location,
+          timeSlot: course.timeSlot,
+          mode: course.mode,
+          instructorName: course.instructorName,
+          startDate: course.startDate ? dayjs(course.startDate) : null,
+          endDate: course.endDate ? dayjs(course.endDate) : null,
+          seatsAvailable: course.seatsAvailable,
+          isTrending: course.isTrending,
+          isUpcomingBatch: course.isUpcomingBatch,
+          images: imagesList,
+          syllabus: syllabusList,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Failed to fetch course data");
+    } finally {
+      setFetching(false);
     }
-  } catch (err) {
-    console.error(err);
-    message.error("Something went wrong while fetching course data!");
-  } finally {
-    setFetching(false);
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchCourse();
@@ -93,25 +505,39 @@ const fetchCourse = async () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("description", values.description);
-      formData.append("category", values.category);
-      formData.append("fee", values.fee);
-      formData.append("duration", values.duration);
-      formData.append("contactNumber", values.contactNumber);
-      formData.append("isTrending", values.isTrending);
 
+      formData.append("courseName", values.courseName);
+      formData.append("timeSlot", values.timeSlot);
+      formData.append("mode", values.mode);
+      formData.append("instructorName", values.instructorName);
+      formData.append("startDate", values.startDate?.toISOString());
+      formData.append("endDate", values.endDate?.toISOString());
+      formData.append("seatsAvailable", values.seatsAvailable);
+      formData.append("isTrending", values.isTrending);
+      formData.append("isUpcomingBatch", values.isUpcomingBatch);
+      formData.append("fee", values.fee);
+      formData.append("contactNumber", values.contactNumber);
+      formData.append("location", values.location);
+      formData.append("category", values.category);
+      formData.append("duration", values.duration);
+      formData.append("description", values.description);
+
+      // Images
       if (values.images?.length > 0) {
         values.images.forEach((file) => {
-          if (file.originFileObj) formData.append("images", file.originFileObj);
+          if (file.originFileObj)
+            formData.append("images", file.originFileObj);
           else if (file.url) formData.append("existingImages", file.url);
         });
       }
 
+      // Syllabus
       if (values.syllabus?.length > 0) {
         const syllabusFile = values.syllabus[0];
-        if (syllabusFile.originFileObj) formData.append("syllabus", syllabusFile.originFileObj);
-        else if (syllabusFile.url) formData.append("existingSyllabus", syllabusFile.url);
+        if (syllabusFile.originFileObj)
+          formData.append("syllabus", syllabusFile.originFileObj);
+        else if (syllabusFile.url)
+          formData.append("existingSyllabus", syllabusFile.url);
       }
 
       const res = await axios.put(
@@ -120,22 +546,27 @@ const fetchCourse = async () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      if (res.data.success) message.success("✅ Course updated successfully!");
-      else message.error("❌ Failed to update course.");
-    } catch (err) {
-      console.error(err);
-      message.error("❌ Something went wrong!");
+      if (res.data.success) {
+        toast.success("✅ Course Updated successfully!");
+        navigate("/admin/courses/list"); // Redirect after update
+      } else {
+        toast.error("⚠️ Failed to update course!");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("❌ Something went wrong, please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (fetching) return <Spin style={{ display: "block", margin: "50px auto" }} />;
+  if (fetching)
+    return <Spin style={{ display: "block", margin: "50px auto" }} />;
 
   return (
     <Card
       style={{
-        maxWidth: 900,
+        maxWidth: 1000,
         margin: "40px auto",
         padding: "20px 30px",
         borderRadius: 12,
@@ -147,16 +578,32 @@ const fetchCourse = async () => {
       </Title>
       <Divider>Course Information</Divider>
       <Form layout="vertical" form={form} onFinish={handleSubmit}>
+        {/* Row 1 */}
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
-              label="Course Title"
-              name="title"
-              rules={[{ required: true, message: "Please enter course title" }]}
+              label="Course Name"
+              name="courseName"
+              rules={[{ required: true, message: "Please enter course name" }]}
             >
-              <Input placeholder="Enter course title" />
+              <Input placeholder="Enter course name" />
             </Form.Item>
           </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Instructor Name"
+              name="instructorName"
+              rules={[
+                { required: true, message: "Please enter instructor name" },
+              ]}
+            >
+              <Input placeholder="Enter instructor name" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Row 2 */}
+        <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
               label="Category"
@@ -165,21 +612,42 @@ const fetchCourse = async () => {
             >
               <Select placeholder="Select category">
                 {categoryOptions.map((cat) => (
-                  <Select.Option key={cat} value={cat}>
+                  <Option key={cat} value={cat}>
                     {cat}
-                  </Select.Option>
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Mode"
+              name="mode"
+              rules={[{ required: true, message: "Please select mode" }]}
+            >
+              <Select placeholder="Select mode">
+                {modeOptions.map((m) => (
+                  <Option key={m} value={m}>
+                    {m}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
         </Row>
+
+        {/* Description */}
         <Form.Item
           label="Description"
           name="description"
-          rules={[{ required: true, message: "Please enter course description" }]}
+          rules={[
+            { required: true, message: "Please enter course description" },
+          ]}
         >
           <TextArea rows={4} placeholder="Enter course description" />
         </Form.Item>
+
+        {/* Row 3 */}
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
@@ -187,33 +655,118 @@ const fetchCourse = async () => {
               name="fee"
               rules={[{ required: true, message: "Please enter fee" }]}
             >
-              <InputNumber style={{ width: "100%" }} placeholder="Enter course fee" />
+              <InputNumber
+                style={{ width: "100%" }}
+                placeholder="Enter course fee"
+              />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
             <Form.Item
-              label="Duration"
+              label="Duration (in months)"
               name="duration"
               rules={[{ required: true, message: "Please enter duration" }]}
             >
-              <Input placeholder="e.g. 6 weeks, 3 months" />
+              <Input placeholder="e.g. 3" />
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item
-          label="Contact Number"
-          name="contactNumber"
-          rules={[
-            { required: true, message: "Please enter contact number" },
-            { pattern: /^[6-9]\d{9}$/, message: "Enter valid 10-digit mobile number" },
-          ]}
-        >
-          <Input placeholder="Enter contact number" />
-        </Form.Item>
-        <Form.Item label="Trending" name="isTrending" valuePropName="checked">
-          <Switch />
-        </Form.Item>
 
+        {/* Row 4 */}
+        <Row gutter={16}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Time Slot"
+              name="timeSlot"
+              rules={[{ required: true, message: "Please enter time slot" }]}
+            >
+              <Input placeholder="Mon-Wed-Fri 6:00 PM - 9:00 PM" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Seats Available"
+              name="seatsAvailable"
+              rules={[{ required: true, message: "Please enter seat count" }]}
+            >
+              <InputNumber style={{ width: "100%" }} min={1} />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Row 5 */}
+        <Row gutter={16}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Start Date"
+              name="startDate"
+              rules={[{ required: true, message: "Please select start date" }]}
+            >
+              <DatePicker style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="End Date"
+              name="endDate"
+              rules={[{ required: true, message: "Please select end date" }]}
+            >
+              <DatePicker style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Row 6 */}
+        <Row gutter={16}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Contact Number"
+              name="contactNumber"
+              rules={[
+                { required: true, message: "Please enter contact number" },
+                {
+                  pattern: /^[6-9]\d{9}$/,
+                  message: "Enter valid 10-digit mobile number",
+                },
+              ]}
+            >
+              <Input placeholder="Enter contact number" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Location"
+              name="location"
+              rules={[{ required: true, message: "Please enter location" }]}
+            >
+              <Input placeholder="Enter location" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Row 7 */}
+        <Row gutter={16}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Trending"
+              name="isTrending"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Upcoming Batch"
+              name="isUpcomingBatch"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Uploads */}
         <Divider>Uploads</Divider>
         <Row gutter={16}>
           <Col xs={24} md={12}>
@@ -221,7 +774,9 @@ const fetchCourse = async () => {
               label="Course Images"
               name="images"
               valuePropName="fileList"
-              getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
+              getValueFromEvent={(e) =>
+                Array.isArray(e) ? e : e && e.fileList
+              }
             >
               <Upload multiple beforeUpload={() => false} listType="picture">
                 <Button icon={<UploadOutlined />}>Upload Images</Button>
@@ -233,7 +788,9 @@ const fetchCourse = async () => {
               label="Syllabus (PDF)"
               name="syllabus"
               valuePropName="fileList"
-              getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
+              getValueFromEvent={(e) =>
+                Array.isArray(e) ? e : e && e.fileList
+              }
             >
               <Upload beforeUpload={() => false} maxCount={1} accept=".pdf">
                 <Button icon={<UploadOutlined />}>Upload PDF</Button>
