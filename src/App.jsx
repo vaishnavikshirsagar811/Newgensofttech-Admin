@@ -21,8 +21,8 @@ import SectorList from "./components/Installation/SectorList";
 import SectorForm from "./components/Installation/SectorForm";
 import ForgotPassword from "./auth/ForgotPassword";
 import ResetPassword from "./auth/ResetPassword";
-import PortfolioList from "./components/PortFolio/PortfolioList";
-import PortfolioForm from "./components/PortFolio/PortfolioForm";
+
+
 import ServiceList from "./components/services/ServiceList";
 import ServiceForm from "./components/services/ServiceForm";
 
@@ -34,6 +34,7 @@ import GetCourses from "./components/Courses/GetCourses";
 import EditCourseForm from "./components/Courses/EditCourseForm";
 import AddBatchForm from "./components/Batchess/AddBatchForm";
 import BatchManagement from "./components/Batchess/BatchManagementlist";
+import Resgister from "./components/Resgister/Resgister";
 
 function App() {
   return (
@@ -60,8 +61,8 @@ function App() {
             <Route path="/admin/banner" element={<BannerList />} />
             <Route path="testimonials" element={<TestimonialList />} />
             <Route path="contact-list" element={<ContactList />} />
-            <Route path="portfolio" element={<PortfolioList />} />
-            <Route path="portfolio/create" element={<PortfolioForm />} />
+            <Route path="/admin/Resgister" element={<Resgister/>} />
+          
             <Route path="sectors" element={<SectorList />} />
             <Route path="sectors/create" element={<SectorForm />} />
             <Route path="/admin/services" element={<ServiceList />} />

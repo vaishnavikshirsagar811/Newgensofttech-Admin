@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Button, Input, Space, Popconfirm } from "antd";
+import { Table, Button, Input, Space, Popconfirm ,Card} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./ContactList.css"; // Optional for responsive styling
+import "./ContactList.css"; // Optional: add responsive & hover styles
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -15,17 +15,15 @@ const ContactList = () => {
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [searchText, setSearchText] = useState("");
 
-  // Fetch contacts from API
+  // Fetch contacts
   useEffect(() => {
     axios
       .get(`${API_URL}/api/v1/contact`)
       .then((res) => {
         if (res.data.success && res.data.data) {
-          // Wrap single object in array if needed
           const contactsArray = Array.isArray(res.data.data)
             ? res.data.data
             : [res.data.data];
-
           setContacts(contactsArray);
           setFilteredContacts(contactsArray);
         }
@@ -36,20 +34,20 @@ const ContactList = () => {
       });
   }, []);
 
-  // Search filter
+  // Search
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchText(value);
     const filtered = contacts.filter(
-      (contact) =>
-        contact.name.toLowerCase().includes(value) ||
-        contact.email.toLowerCase().includes(value) ||
-        contact.subject?.toLowerCase().includes(value)
+      (c) =>
+        c.name.toLowerCase().includes(value) ||
+        c.email.toLowerCase().includes(value) ||
+        c.subject?.toLowerCase().includes(value)
     );
     setFilteredContacts(filtered);
   };
 
-  // Delete contact
+  // Delete
   const handleDelete = (id) => {
     axios
       .delete(`${API_URL}/api/v1/contact/${id}`)
@@ -65,7 +63,6 @@ const ContactList = () => {
       });
   };
 
-  // Table columns
   const columns = [
     { title: "Name", dataIndex: "name", key: "name", align: "center" },
     { title: "Email", dataIndex: "email", key: "email", align: "center" },
@@ -87,12 +84,19 @@ const ContactList = () => {
       align: "center",
       render: (_, record) => (
         <Popconfirm
-          title="Are you sure you want to delete this contact?"
+          title="Delete this contact?"
           onConfirm={() => handleDelete(record._id)}
           okText="Yes"
           cancelText="No"
         >
-          <Button type="primary" danger>
+          <Button
+            style={{
+              background: "linear-gradient(90deg,#f43f5e,#f59e0b)",
+              color: "#fff",
+              border: "none",
+              fontWeight: 500,
+            }}
+          >
             Delete
           </Button>
         </Popconfirm>
@@ -101,12 +105,19 @@ const ContactList = () => {
   ];
 
   return (
-    <div className="contact-container">
+    <div className="contact-container" style={{ maxWidth: 1200, margin: "20px auto", padding: "0 16px" }} >
+      
       <ToastContainer position="top-right" autoClose={3000} />
+       <Card
+            style={{
+              borderRadius: "16px",
+              padding: "20px",
+              boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
+            }}
+          >
+      <h2 style={{ textAlign: "center", color: "#45385e", marginBottom: 20 }}>📨 Contact Enquiries</h2>
 
-      <h2 className="contact-heading">Contact Enquiries</h2>
-
-      <Space className="top-controls" style={{ marginBottom: "10px" }}>
+      <Space style={{ marginBottom: 16, width: "100%" }}>
         <Input
           placeholder="Search by name, email, or subject"
           value={searchText}
@@ -125,13 +136,24 @@ const ContactList = () => {
           pagination={{ pageSize: 5 }}
           bordered
           scroll={{ x: "max-content" }}
+          rowClassName={() => "hover-row"}
         />
       </div>
 
       {/* Mobile Cards */}
       <div className="mobile-cards">
         {filteredContacts.map((contact) => (
-          <div className="card" key={contact._id} style={{ marginBottom: "15px", padding: "10px", border: "1px solid #ddd", borderRadius: "5px" }}>
+          <div
+            key={contact._id}
+            style={{
+              marginBottom: 15,
+              padding: 15,
+              border: "1px solid #ddd",
+              borderRadius: 12,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+              background: "#fff",
+            }}
+          >
             <p><strong>Name:</strong> {contact.name}</p>
             <p><strong>Email:</strong> {contact.email}</p>
             <p><strong>Phone:</strong> {contact.phone}</p>
@@ -143,13 +165,23 @@ const ContactList = () => {
               okText="Yes"
               cancelText="No"
             >
-              <Button type="primary" danger block>
+              <Button
+                block
+                style={{
+                  background: "linear-gradient(90deg,#f43f5e,#f59e0b)",
+                  color: "#fff",
+                  border: "none",
+                  fontWeight: 500,
+                  marginTop: 10,
+                }}
+              >
                 Delete
               </Button>
             </Popconfirm>
           </div>
         ))}
       </div>
+      </Card>
     </div>
   );
 };
