@@ -6,7 +6,7 @@ import moment from "moment";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const AddBatchForm = () => {
   const [form] = Form.useForm();
 
@@ -26,7 +26,7 @@ const AddBatchForm = () => {
         location: values.location,
       };
 
-      const res = await axios.post("http://localhost:5016/api/v1/batches", payload);
+      const res = await axios.post(`${API_BASE_URL}/api/v1/batches`, payload);
       if (res.data.success) {
         message.success("Batch created successfully!");
         form.resetFields();

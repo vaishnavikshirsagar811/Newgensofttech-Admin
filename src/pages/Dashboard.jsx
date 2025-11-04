@@ -12,7 +12,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { FaBook, FaEnvelope, FaUserPlus } from "react-icons/fa";
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const Dashboard = () => {
   const [dataCounts, setDataCounts] = useState({
     courses: 0,
@@ -26,15 +26,17 @@ const Dashboard = () => {
   const fetchCounts = async () => {
     try {
       const [coursesRes, contactsRes, regRes] = await Promise.all([
-        axios.get("http://localhost:5016/api/v1/courses"),
-        axios.get("http://localhost:5016/api/v1/contact"),
-        axios.get("http://localhost:5016/api/v1/Registration"),
+        axios.get(`${API_BASE_URL}/api/v1/courses`),
+        axios.get(`${API_BASE_URL}/api/v1/contact`),
+        axios.get(`${API_BASE_URL}/api/v1/Registration`),
       ]);
       setDataCounts({
-        courses: coursesRes.data.totalCount || 0,
-        contacts: contactsRes.data.totalCount || 0,
-        registrations: regRes.data.totalCount || 0,
-      });
+  courses: coursesRes.data.count || coursesRes.data.totalCount || 0,
+  contacts: contactsRes.data.count || contactsRes.data.totalCount || 0,
+  registrations: regRes.data.count || regRes.data.totalCount || 0,
+});
+
+     
     } catch (error) {
       console.error(error);
     } finally {

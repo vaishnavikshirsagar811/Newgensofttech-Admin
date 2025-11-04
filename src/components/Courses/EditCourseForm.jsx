@@ -428,9 +428,9 @@ const { TextArea } = Input;
 const { Title } = Typography;
 const { Option } = Select;
 
-const categoryOptions = ["Development", "Database", "Cloud", "SAP"];
+const categoryOptions = ["Development", "Database", "Cloud", "SAP", "Testing"];
 const modeOptions = ["Online", "Offline", "Hybrid"];
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const EditCourseForm = () => {
   const { courseId } = useParams();
   const navigate = useNavigate(); // For redirect
@@ -443,7 +443,7 @@ const EditCourseForm = () => {
     try {
       setFetching(true);
       const res = await axios.get(
-        `http://localhost:5016/api/v1/courses/${courseId}`
+        `${API_BASE_URL}/api/v1/courses/${courseId}`
       );
       if (res.data.success) {
         const course = res.data.data;
@@ -541,7 +541,7 @@ const EditCourseForm = () => {
       }
 
       const res = await axios.put(
-        `http://localhost:5016/api/v1/courses/${courseId}`,
+        `${API_BASE_URL}/api/v1/courses/${courseId}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

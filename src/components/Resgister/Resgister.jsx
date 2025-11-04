@@ -2,23 +2,38 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Table, Tag, Spin } from "antd";
 import axios from "axios";
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const Register = () => {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchRegistrations = async () => {
-    try {
-      const res = await axios.get("http://localhost:5016/api/v1/Registration");
-      if (res.data.success) {
-        setRegistrations(res.data.data); // API returns array
-      }
-    } catch (error) {
-      console.error("Error fetching registrations:", error);
-    } finally {
-      setLoading(false);
+  // const fetchRegistrations = async () => {
+  //   try {
+  //     const res = await axios.get(`${API_BASE_URL}/api/v1/Registration`);
+  //     if (res.data.success) {
+  //       setRegistrations(res.data.data); // API returns array
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching registrations:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+const fetchRegistrations = async () => {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/api/v1/Registration`);
+    if (res.data.success) {
+      const sorted = res.data.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setRegistrations(sorted); // newest first
     }
-  };
+  } catch (error) {
+    console.error("Error fetching registrations:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchRegistrations();

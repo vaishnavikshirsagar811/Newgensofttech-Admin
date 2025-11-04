@@ -3,10 +3,10 @@ import { Tabs, Table, Spin, message, Button, Popconfirm, Tag, Card } from "antd"
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const categories = ["Development", "Database", "Cloud", "SAP"];
+const categories = ["Development", "Database", "Cloud", "SAP", "Testing"];
 const buttonGradient = "linear-gradient(90deg, #28235c, #a31d28)";
 const editGradient = "linear-gradient(90deg, #45385e, #b8b2d5)";
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const GetCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ const GetCourses = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5016/api/v1/courses");
+      const res = await axios.get(`${API_BASE_URL}/api/v1/courses`);
       if (res.data.success) setCourses(res.data.data);
       else message.error("❌ Failed to load courses");
     } catch (err) {
@@ -31,7 +31,7 @@ const GetCourses = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5016/api/v1/courses/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/v1/courses/${id}`);
       message.success("✅ Course deleted!");
       fetchCourses();
     } catch (err) {

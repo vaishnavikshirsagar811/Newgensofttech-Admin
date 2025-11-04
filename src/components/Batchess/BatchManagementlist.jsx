@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-
-const API_URL = "http://localhost:5016/api/v1/batches";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL = `${API_BASE_URL}/api/v1/batches`;
 
 const BatchManagement = () => {
   const [batches, setBatches] = useState([]);

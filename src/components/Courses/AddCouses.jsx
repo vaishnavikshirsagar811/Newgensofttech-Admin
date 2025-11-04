@@ -343,9 +343,9 @@ const { TextArea } = Input;
 const { Title } = Typography;
 const { Option } = Select;
 
-const categoryOptions = ["Development", "Database", "Cloud", "SAP"];
+const categoryOptions = ["Development", "Database", "Cloud", "SAP",'Testing'];
 const modeOptions = ["Online", "Offline", "Hybrid"];
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const CreateCourseForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // ✅ navigate hook
@@ -383,8 +383,7 @@ const CreateCourseForm = () => {
         formData.append("syllabus", values.syllabus[0].originFileObj);
       }
 
-      const res = await axios.post(
-        "http://localhost:5016/api/v1/courses",
+      const res = await axios.post(`${API_BASE_URL}/api/v1/courses`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
