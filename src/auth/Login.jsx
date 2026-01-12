@@ -1,20 +1,14 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Shreelogo from "../../src/assets/logo/Paisagramindia_Logo_.webp";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-
-
-
-
- import { useState } from "react";
- import { useNavigate } from "react-router-dom";
- import { useAuth } from "./AuthContext";
- import axios from "axios";
- import { toast, ToastContainer } from "react-toastify";
- import "react-toastify/dist/ReactToastify.css";
- import shreeimage from "../../src/assets/logo/image.png";
- import Shreelogo from "../../src/assets/logo/NEWGEN-Softech-Logo.png"
-const API_URL = import.meta.env.VITE_API_BASE_URL; 
-
-  const Login = () => {
+const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -26,13 +20,13 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${API_URL}/api/auth/login`, form);
+      const res = await axios.post(`${API_URL}api/auth/login`, form);
       login(res.data.token);
       toast.success("Login successfully!", {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: false,
-        onClose: () => navigate("/admin/contact"),
+        onClose: () => navigate("/admin/"),
       });
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed", {
@@ -46,97 +40,101 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
   return (
     <>
       <ToastContainer />
-     <div
-  className="container-fluid vh-100 d-flex align-items-center justify-content-center"
-  // style={{ backgroundColor: "#f8f9fa" }}
->
-  <div
-    className="row w-100 shadow-lg rounded"
-    style={{
-      maxWidth: "780px",
-      boxShadow: "0 10px 40px rgba(0, 0, 0, 0.3)",
-      // backgroundColor: "#fbdde7",
-    }}
-  >
-    {/* Left Section */}
-    <div className="col-md-6 p-4 d-flex flex-column justify-content-start">
-      <img
-        src={shreeimage}
-        alt="Shree Services"
-        className="img-fluid rounded"
-        style={{
-          height: "320px",
-          objectFit: "cover",
-          marginBottom: "15px",
-        }}
-      />
+
       <div
-        className="p-3 rounded"
-        // style={{ backgroundColor: "#600030", color: "#fff", minHeight: "100px" }}
+        className="vh-100 d-flex align-items-center justify-content-center position-relative"
+        style={{
+          background: "linear-gradient(120deg, #1f1c2c, #928dab)",
+          fontFamily: "'Poppins', sans-serif",
+          overflow: "hidden",
+        }}
       >
-        <h6 className="fw-bold " style={{ fontSize: "18px" }}>
-          Welcome to <span className="fw-bold">NewgenSoftTech</span>
-        </h6>
-        {/* <small
-          style={{
-            lineHeight: "1.4",
-            fontSize: "12px",
-            fontWeight: 400,
-            display: "block",
-          }}
-        >
-          A cloud-based, streamlined Employee management system with a
-          centralized, user-friendly interface.
-        </small> */}
-      </div>
-    </div>
-
-    {/* Right Section */}
-    <div
-      className="col-md-6 p-4 d-flex flex-column justify-content-center"
-      // style={{ backgroundColor: "#fbdde7" }}
-    >
-      <div className="text-start mb-3">
-        <div>
-          <img
-            src={Shreelogo}
-            alt="Shree Logo"
-            style={{ width: "280px", height: "auto" }}
+        {/* Animated Background */}
+        <div className="position-absolute w-100 h-100 top-0 start-0">
+          <div
+            style={{
+              position: "absolute",
+              width: "400px",
+              height: "400px",
+              background: "rgba(255,255,255,0.05)",
+              borderRadius: "50%",
+              top: "-120px",
+              left: "-120px",
+              animation: "float 8s infinite alternate",
+            }}
           />
-           <h4 className="mt-3 fw-bold">Login</h4>
-  <p className="text-muted mb-0">Enter your credential to login to your account</p>
-
+          <div
+            style={{
+              position: "absolute",
+              width: "300px",
+              height: "300px",
+              background: "rgba(255,255,255,0.07)",
+              borderRadius: "50%",
+              bottom: "-120px",
+              right: "-60px",
+              animation: "float 10s infinite alternate-reverse",
+            }}
+          />
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label fw-semibold">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control border-danger"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="Enter email"
-              required
-              style={{ width: "320px" }}
-            />
+        {/* Login Card */}
+        <div
+          className="p-4 p-sm-5 rounded-4"
+          style={{
+            maxWidth: "380px",
+            width: "90%",
+            backdropFilter: "blur(15px)",
+            background: "rgba(0, 0, 0, 0.125)",
+            boxShadow: "0 8px 32px rgba(31,38,135,0.37)",
+            zIndex: 2,
+            color: "#fff",
+          }}
+        >
+          {/* Logo */}
+          <div className="text-center mb-4">
+            <img src={Shreelogo} alt="Logo" style={{ width: "150px" }} />
+            <h2 className="mt-3 fw-bold">Sign In</h2>
+            <p className="text-light small">
+              Enter your credentials to access your account
+            </p>
           </div>
 
-          <div className="mb-1">
-            <label className="form-label fw-semibold">Password</label>
-            <div className="input-group" style={{ width: "320px" }}>
+          {/* Form */}
+          <form onSubmit={handleSubmit}>
+            <div className="form-floating mb-3">
+             <input
+  type="email"
+  name="email"
+  className="form-control bg-transparent text-white border-light"
+  id="email"
+  placeholder="Email"
+  value={form.email}
+  onChange={handleChange}
+  required
+/>
+
+              <label htmlFor="email" className="text-light">
+                Email
+              </label>
+            </div>
+
+            <div className="form-floating mb-3 position-relative">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                className="form-control border-danger"
+                className="form-control bg-transparent text-white border-light"
+                id="password"
+                placeholder="Password"
                 value={form.password}
                 onChange={handleChange}
-                placeholder="Enter password"
                 required
               />
+              <label htmlFor="password" className="text-light">
+                Password
+              </label>
+
               <span
-                className="input-group-text bg-white border-danger"
+                className="position-absolute top-50 end-0 translate-middle-y pe-3"
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowPassword(!showPassword)}
               >
@@ -147,54 +145,72 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
                 ></i>
               </span>
             </div>
-          </div>
 
-          <div
-            className="d-flex justify-content-end mb-3"
-            style={{ width: "320px" }}
-          >
-            <a
-              href="#"
-              className="text-decoration-none small"
-              onClick={() => navigate("/forgot-password")}
+            <div className="d-flex justify-content-end mb-4">
+              <button
+                type="button"
+                className="btn btn-link p-0 text-light small text-decoration-none"
+                onClick={() => navigate("/forgot-password")}
+              >
+                Forgot Password?
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              className="btn w-100 fw-bold"
+              style={{
+                background: "linear-gradient(135deg, #ff416c, #ff4b2b)",
+                color: "#fff",
+                fontSize: "16px",
+                transition: "0.3s",
+              }}
             >
-              Forget Password?
-            </a>
+              Sign In
+            </button>
+          </form>
+
+          <div className="text-center mt-4">
+            <small className="text-light-50">
+              © 2026 NewgenSoftTech. All rights reserved.
+            </small>
           </div>
-
-          <button
-            type="submit"
-            className="btn w-85 text-white fw-semibold"
-            style={{ backgroundColor: "#210517ff", width: "320px" }}
-          >
-            Sign in
-          </button>
-        </form>
+        </div>
       </div>
-    </div>
 
-    {/* Footer INSIDE box */}
-    {/* <div className="col-12 text-center py-3 border-top">
-      <small
-        className="text-muted fw-bold"
-        style={{ fontSize: "13px" }}
-      >
-        Designed and Developed by{" "}
-        <a
-          href="https://deinertech.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-decoration-none text-primary"
-        >
-          Deinertech Software
-        </a>{" "}
-        | © Shree Quality Services. All rights reserved.
-      </small>
-    </div> */}
-  </div>
-</div>
+      {/* Styles */}
+      <style>
+        {`
+          @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(50px); }
+          }
 
+          .form-control:focus {
+            box-shadow: none;
+            border-color: #ff416c;
+          }
 
+          .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+          }
+
+          @media (max-width: 576px) {
+            h2 {
+              font-size: 1.6rem;
+            }
+
+            p {
+              font-size: 0.85rem;
+            }
+
+            .btn {
+              font-size: 15px;
+            }
+          }
+        `}
+      </style>
     </>
   );
 };

@@ -15,7 +15,7 @@ import {
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../auth/AuthContext';
 import { toast } from 'react-toastify';
-import Shreelogo from '../../../assets/logo/NEWGEN-Softech-Logo.png';
+import Shreelogo from '../../../assets/logo/Paisagramindia_Logo_.webp';
 import axios from "axios";
 import './Sidebar.css';
 
@@ -30,12 +30,12 @@ const Sidebar = () => {
 
   const pathToKeyMap = {
     '/admin': '1',
-    '/admin/courses/list': '2',
-    '/admin/banner': '3',
-    '/admin/batches/list': '4',
-    '/admin/testimonials': '5',
-    '/admin/contact': '6',
-    '/admin/portfolio': '7',
+    '/admin/Eventlist': '2',
+ 
+
+   
+   
+ 
     '/admin/employees/list': '8',
     '/admin/employees/leaves': '9',
     '/admin/career/jobs': '10',
@@ -51,20 +51,59 @@ const Sidebar = () => {
   const siderWidth = collapsed ? 80 : 200;
 
   // Logout function without alert
-  const handleLogout = async () => {
-    try {
-      await axios.post(
-        `${API_URL}/api/auth/logout`,
-        {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-      );
-      logout();
-      navigate('/login');
-      toast.success("✅ Logged out successfully", { autoClose: 2000 });
-    } catch (err) {
-      toast.error("❌ Logout failed", { autoClose: 2000 });
-    }
-  };
+const handleLogout = () => {
+  const ToastContent = ({ closeToast }) => (
+    <div>
+      <p>⚠️ Are you sure you want to log out?</p>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+        <button
+          style={{
+            background: '#f0f0f0',
+            border: '1px solid #ccc',
+            padding: '5px 10px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+          onClick={() => closeToast()} // Cancel
+        >
+          No
+        </button>
+        <button
+          style={{
+            background: '#1890ff',
+            color: 'white',
+            border: 'none',
+            padding: '5px 10px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            // Clear data and logout
+            localStorage.clear();
+            sessionStorage.clear();
+            logout();
+            navigate('/');
+            toast.dismiss(); // close the confirmation toast
+            toast.success('✅ Logged out successfully', { autoClose: 2000, icon: false });
+          }}
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  );
+
+  toast.info(<ToastContent />, {
+    position: "top-center",
+    autoClose: false,
+    closeOnClick: false,
+    draggable: false,
+    icon: false, // remove the spinning/info icon
+  });
+};
+
+
+
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -92,11 +131,8 @@ const Sidebar = () => {
           className="menu"
           items={[
             { key: '1', icon: <AppstoreOutlined />, label: 'Dashboard', onClick: () => navigate('/admin') },
-            { key: '2', icon: <FileTextOutlined />, label: 'Courses', onClick: () => navigate('/admin/courses/list') },
-            { key: '3', icon: <PictureOutlined />, label: 'Banner', onClick: () => navigate('/admin/banner') },
-            { key: '5', icon: <StarOutlined />, label: 'Testimonials', onClick: () => navigate('/admin/testimonials') },
-            { key: '6', icon: <PhoneOutlined />, label: 'Contact', onClick: () => navigate('/admin/contact') },
-            { key: '7', icon: <TeamOutlined />, label: 'Registration', onClick: () => navigate('/admin/Resgister') },
+            { key: '2', icon: <FileTextOutlined />, label: 'Events', onClick: () => navigate('/admin/Eventlist') },
+            { key: '3', icon: <TeamOutlined />, label: 'Registration', onClick: () => navigate('/admin/eventuser') },
             { key: 'logout', icon: <LogoutOutlined />, label: 'Log Out', onClick: handleLogout },
           ]}
         />

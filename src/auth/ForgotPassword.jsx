@@ -1,114 +1,137 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-  const [token, setToken] = useState("");
-  const [step, setStep] = useState(1); // 1: get token, 2: reset password
-  const [newPass, setNewPass] = useState({ newPassword: "", confirmPassword: "" });
   const navigate = useNavigate();
 
-  const requestToken = async () => {
+  const [step, setStep] = useState(1);
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPass, setNewPass] = useState({
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  // ================= Request OTP =================
+  const requestOtp = async () => {
+    if (!email) {
+      toast.warning("Please enter your email");
+      return;
+    }
+
     try {
-      const res = await axios.post(`${API_URL}/api/auth/forgot-password`, { email });
-      setToken(res.data.resetToken); // in production, this is emailed
+      const res = await axios.post(`${API_URL}api/auth/forgot-password`, {
+        email,
+      });
+
+      toast.success(res.data.message || "OTP sent successfully");
       setStep(2);
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to request token");
+      toast.error(err.response?.data?.message || "Failed to send OTP");
     }
   };
 
+  // ================= Reset Password =================
   const resetPassword = async () => {
+    if (!otp) {
+      toast.warning("Please enter OTP");
+      return;
+    }
+
+    if (!newPass.newPassword || !newPass.confirmPassword) {
+      toast.warning("Please fill all password fields");
+      return;
+    }
+
+    if (newPass.newPassword !== newPass.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     try {
-      await axios.post(`${API_URL}/api/auth/reset-password`, {
-        token,
-        ...newPass,
+      const res = await axios.post(`${API_URL}api/auth/reset-password`, {
+        email,
+        otp,
+        newPassword: newPass.newPassword,
+        confirmPassword: newPass.confirmPassword,
       });
-      alert("Password reset successful. Please login.");
-      navigate("/login");
+
+      toast.success(res.data.message || "Password reset successfully");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (err) {
-      alert(err.response?.data?.message || "Reset failed");
+      toast.error(err.response?.data?.message || "Password reset failed");
     }
   };
 
   return (
-    // <div className="container mt-5">
-    //   <h3>Forgot Password</h3>
-    //   {step === 1 ? (
-    //     <>
-    //       <input
-    //         className="form-control mb-3"
-    //         placeholder="Enter your email"
-    //         value={email}
-    //         onChange={(e) => setEmail(e.target.value)}
-    //       />
-    //       <button className="btn btn-warning" onClick={requestToken}>Request Reset Token</button>
-    //     </>
-    //   ) : (
-    //     <>
-    //       <div className="mb-2">
-    //         <input
-    //           className="form-control mb-2"
-    //           placeholder="New password"
-    //           type="password"
-    //           value={newPass.newPassword}
-    //           onChange={(e) => setNewPass({ ...newPass, newPassword: e.target.value })}
-    //         />
-    //         <input
-    //           className="form-control"
-    //           placeholder="Confirm password"
-    //           type="password"
-    //           value={newPass.confirmPassword}
-    //           onChange={(e) => setNewPass({ ...newPass, confirmPassword: e.target.value })}
-    //         />
-    //       </div>
-    //       <button className="btn btn-success" onClick={resetPassword}>Reset Password</button>
-    //     </>
-    //   )}
-    // </div>
-
     <div className="container mt-5 d-flex justify-content-center">
-  <div className="p-4 border rounded shadow-lg" style={{ maxWidth: '350px', width: '100%' }}>
-    <h4 className="text-center mb-4">Reset Password</h4>
-    {step === 1 ? (
-      <>
-        <input
-          className="form-control mb-3"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button className="btn btn-warning w-100" onClick={requestToken}>Request Reset Token</button>
-      </>
-    ) : (
-      <>
-        <div className="mb-3">
-           <label className="form-label fw-semibold">New Password</label>
-          <input
-            className="form-control mb-2"
-            // placeholder="New password"
-            type="password"
-            value={newPass.newPassword}
-            onChange={(e) => setNewPass({ ...newPass, newPassword: e.target.value })}
-          />
-           <label className="form-label fw-semibold">Confirm Password</label>
-          <input
-            className="form-control"
-            // placeholder="Confirm password"
-            type="password"
-            value={newPass.confirmPassword}
-            onChange={(e) => setNewPass({ ...newPass, confirmPassword: e.target.value })}
-          />
-        </div>
-        <button className="btn btn-success w-100" onClick={resetPassword}>submit</button>
-      </>
-    )}
-  </div>
-</div>
+      <div
+        className="p-4 border rounded shadow-lg"
+        style={{ maxWidth: "400px", width: "100%" }}
+      >
+        <h4 className="text-center mb-4">Forgot Password</h4>
 
+        {step === 1 ? (
+          <>
+            <label className="form-label fw-semibold">Email</label>
+            <input
+              type="email"
+              className="form-control mb-3"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button className="btn btn-warning w-100" onClick={requestOtp}>
+              Send OTP
+            </button>
+          </>
+        ) : (
+          <>
+            <label className="form-label fw-semibold">OTP</label>
+            <input
+              type="text"
+              className="form-control mb-2"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+            />
+
+            <label className="form-label fw-semibold">New Password</label>
+            <input
+              type="password"
+              className="form-control mb-2"
+              placeholder="Enter new password"
+              value={newPass.newPassword}
+              onChange={(e) =>
+                setNewPass({ ...newPass, newPassword: e.target.value })
+              }
+            />
+
+            <label className="form-label fw-semibold">Confirm Password</label>
+            <input
+              type="password"
+              className="form-control mb-3"
+              placeholder="Confirm new password"
+              value={newPass.confirmPassword}
+              onChange={(e) =>
+                setNewPass({ ...newPass, confirmPassword: e.target.value })
+              }
+            />
+
+            <button className="btn btn-success w-100" onClick={resetPassword}>
+              Reset Password
+            </button>
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 
